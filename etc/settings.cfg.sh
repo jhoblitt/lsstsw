@@ -46,3 +46,6 @@ export EUPSPKG_SOURCE=${EUPSPKG_SOURCE:-git}
 
 # the location of the distribution server
 export EUPS_PKGROOT=${LSSTSW}/distserver/production
+
+# disable python output buffering; primarily intended for lsst_build
+export PYTHONUNBUFFERED=1
