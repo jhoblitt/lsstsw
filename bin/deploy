@@ -88,6 +88,8 @@ while getopts "3bh" option; do
 done
 shift $((OPTIND-1))
 
+config_curl
+
 mkdir -p "${LSSTSW}"/{sources,build,var/run,var/log,lfs,distserver/production}
 
 export PATH="${LSSTSW}/lfs/bin:${PATH}"
