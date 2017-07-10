@@ -31,7 +31,6 @@ versiondb_head() {
 
 PREP_ONLY=false
 NO_FETCH=false
-UPDATE=false
 
 while getopts ":pnur:t:" o; do
   case "$o" in
@@ -42,8 +41,9 @@ while getopts ":pnur:t:" o; do
     NO_FETCH=true
     ;;
   u)
-    UPDATE=true
+    >&2 echo "WARN: the -u flag is deprecated and has no effect"
     ;;
+
   r)
     REF="$REF --ref $OPTARG"
     ;;
@@ -82,12 +82,6 @@ fi
   trap cleanup EXIT
 
   flock-fd 200 || { echo "a rebuild is already in process." 1>&2; exit 1; }
-  #
-  # update repos.yaml file
-  #
-  if [[ $UPDATE == true ]]; then
-    curl -# -L --silent -o "$REPOSFILE" "$REPOSFILE_URL"
-  fi
 
   #
   # Prepare build
