@@ -68,6 +68,30 @@ config_curl() {
   CURL_OPTS+=('--fail')
 }
 
+fetch_repos.yaml() {
+  local ref=${1:-master}
+  local repo=${2:-$REPOSFILE_REPO}
+
+  local baseurl="https://raw.githubusercontent.com/${repo}/${ref}"
+
+  $CURL "${CURL_OPTS[@]}" \
+    -L \
+    "${baseurl}/etc/repos.yaml" \
+    -o "$REPOSFILE"
+}
+
+update_repos.yaml() {
+  local ref=${1?repos.yaml git ref is required}
+
+  mkdir -p etc
+  (
+    set -e
+
+    cd etc
+    fetch_repos.yaml "$ref"
+  )
+}
+
 # We are intentionally not using gnu `getopt` due to portability concerns.
 # Sadly, this means no long options without a massive amount of boilerplate.
 while getopts "3bh" option; do
@@ -118,6 +142,8 @@ case $(uname -s) in
 esac
 
 cd "$LSSTSW"
+
+update_repos.yaml 'master'
 
 test -f "${LSSTSW}/miniconda/.deployed" || ( # Anaconda
   cd sources
